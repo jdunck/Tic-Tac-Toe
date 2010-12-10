@@ -249,6 +249,7 @@ class Game(object):
 current_branch = None
 games_played = 0
 def test():
+    #I'm a bit nervous here, because it seems there should be 9! possible games (ignoring symmetries), but we're playing far fewer than that.
     global current_branch
     global games_played
     def get_first_available(branch, positions):
@@ -292,10 +293,10 @@ def play():
 
 if __name__ == '__main__':
     import sys
-    if len(sys.argv) == 0:
+    if len(sys.argv) <= 1:
         print "Choose 'play' or 'test'"
         sys.exit(1)
-    if sys.argv[0] == 'play':
-        run()
+    if sys.argv[-1] == 'play':
+        play()
     else:
         test()
