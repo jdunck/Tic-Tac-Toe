@@ -1,4 +1,3 @@
-from itertools import permutations
 from copy import deepcopy
 
 #These values are not arbitrary; logic based on math & index wrap-around below.
@@ -71,7 +70,7 @@ class Game(object):
         
         self.display()
         if self.winner == 0:
-            print "We draw - Just one more bite."
+            print "We draw - It's wafer thin."
         elif self.winner == -1:
             print "I win - Bring me a shubbery."
         else:
@@ -242,7 +241,7 @@ class Game(object):
     def display(self, board=None):
         if board is None:
             board = self.board
-        positions = tuple([["?", self.human_display, self.computer_display][board[position]] for position in POSITIONS])
+        positions = tuple([[str(3*position[0]+position[1]+1), self.human_display, self.computer_display][board[position]] for position in POSITIONS])
         print TEMPLATE % positions
 
 
