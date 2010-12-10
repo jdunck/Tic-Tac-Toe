@@ -245,6 +245,7 @@ class Game(object):
         print TEMPLATE % positions
 
 
+#inspired by dgouldin's test generator.
 current_branch = None
 games_played = 0
 def test():
