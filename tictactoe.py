@@ -1,14 +1,13 @@
 from copy import deepcopy
 
-HUMAN = 1
-UNPLAYED = 0
-COMPUTER = -1 * HUMAN #not arbitrary; logic based on math below.
+#These values are not arbitrary; logic based on math & index wrap-around below.
+[UNPLAYED, HUMAN, COMPUTER] = 0, 1, -1
 
-POSITIONS = [(i,j) for i in range(3) for j in range(3)]
-LINES = [[(i,j) for i in range(3)] for j in range(3)] + \
-             [[(i,j) for j in range(3)] for i in range(3)] + \
-             [[(i,i) for i in range(3)]] + \
-             [[(2-i,i) for i in range(3)]]
+POSITIONS = tuple([(i,j) for i in range(3) for j in range(3)])
+LINES = [tuple([(i,j) for i in range(3)]) for j in range(3)] + \
+             [tuple([(i,j) for j in range(3)]) for i in range(3)] + \
+             [tuple([(i,i) for i in range(3)])] + \
+             [tuple([(2-i,i) for i in range(3)])]
 CORNERS = [(0,0),(0,2),(2,2),(2,0)]
 SIDES = [(1,0),(1,2),(2,1),(0,1)]
 CENTER = (1,1)
@@ -125,10 +124,32 @@ class Game(object):
         
     def impl(self, name):
         print "self.impl %s" % name
+
+    def collect_line(self, board, line):
+        ret = [[],[],[]] #unplayed, human, comp
+        for position in line:
+            ret[board[position]].append(position)
+        return ret
+    def collect_lines(self, board):
+        ret = {}
+        for line in LINES:
+            ret[line] = self.collect_line(board, line)
+        return ret
+
+    def find_win_lines(self, board, who):
+        for line, collection in self.collect_lines(board).items():
+            if len(collection[who]) == 2 and len(collection[UNPLAYED]) == 1:
+                yield collection[UNPLAYED][0], line
+
     def try_win(self, who):
-        self.impl("win")
+        position = None
+        for position, line in self.find_win_lines(self.state, who):
+            break
+        return position
+
     def try_block(self, who):
-        self.impl("block")
+        return self.try_win(self.other_player(who))
+
     def try_fork(self, who):
         self.impl("fork")
     def try_force_defense(self, who):
